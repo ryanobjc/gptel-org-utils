@@ -1,0 +1,113 @@
+* A suite of tools to facilitate AI usage with gptel
+
+This repo has a series of tools to facilitate my daily
+use of gptel in org:
+
+- gptel-org-utils-daily-buffer
+  - every day open a new org file with gptel-mode turned on.
+- gptel-org-utils-new-topic
+  - Creates a new top level headline at the end of the file with a
+    marker set by org-insert-heading to create a new context.
+- gptel-org-utils-summarize
+  - Can summarize a region of text and update the enclosing headline.
+- gptel-org-heading-adjust-mode-enable
+  - Enables a filter on gptel response text to indent the headlines
+    returned by AIs to fit into the current headline.  Ensures
+    that if your AI returns a top level header, it will be indented
+    so it doesnt break structure
+
+
+** How I use org structure
+
+I use this org structure to manage my AI context and to review and
+understand previous chats:
+
+#+begin_src org
+  ,* Top level headline - this is a context boundary
+  :PROPERTIES:
+  :GPTEL_TOPIC: Top-level-headline---this-is
+  :END:
+
+  ,** Next Question
+
+  This is a question for the AI/LLM.  Type what you want here.
+
+  ,*** Next Reply
+  @assistant
+
+  <AI reply goes yere>
+
+  ,** Next Question
+  @user
+
+  (ready for another question here...)
+#+end_src
+
+I use the gptel-prompt-prefix-alist and gptel-response-prefix-alist to
+automatically create the 'next question' and 'next reply' headlines.
+
+You can then use the gptel-org-utils-summarize to update the
+'next question' headline to be a useful summary of the question.
+
+Now you have a top level headline per context, and the questions and
+responses are structured in a very useful way.
+
+** Example emacs config
+
+Here is my use-package definitions:
+
+#+begin_src elisp
+  (use-package gptel-org-heading-adjust
+    :after gptel
+    :config
+    (gptel-org-heading-adjust-mode-enable)
+    )
+
+  (use-package gptel-org-utils
+    :after (org, gptel)
+
+    :custom
+    (gptel-org-branching-context nil)
+    (gptel-org-convert-response t)
+
+    :config
+    (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "** Next Question\n@user\n")
+    (setf (alist-get 'org-mode gptel-response-prefix-alist) "*** Next Reply\n@assistant\n\n")
+
+    :bind
+    ("C-c i s" . gptel-org-utils-summarize)
+    ("C-c i t" . gptel-org-utils-new-topic)
+    ("C-c i n" . gptel-org-utils-dailies-directory)
+    )
+#+end_src
+
+* Other useful things I recommend
+
+I also recommend:
+- mcp
+  - Gives gptel access to MCP servers.
+- org-mcp
+  - Provies a MCP server for your org files, but you can also
+    connect to it from mcp and give your gptel buffer access
+    via use-tools to your org agenda TODOs etc.
+- claude-code-ide
+  - runs claude-code inside emacs, with IDE integration, inside
+    a vterm window!
+
+And believe it or not, that's all the AI packages I use.  gptel and
+claude-code-ide.
+
+
+* A shockingly useful use case
+
+I use gptel + mcp + org-mcp + the atlassian MCP, via the 'mcp-remote'
+nodejs tool to have AI deal with JIRA for me.  Suddenly it doesn't
+suck as much to make and manage tickets.  You can get some help to
+sync your org todos + jira as well!
+
+* So you have all those dailies files...
+
+I had claude-code write me an analysis tool for my dailies files.
+
+It's creatively called [[https://github.com/ryanobjc/dailies-analyzer][dailies-analyzer]].
+
