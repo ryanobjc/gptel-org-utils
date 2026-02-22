@@ -1,5 +1,20 @@
 * A suite of tools to facilitate AI usage with gptel
 
+** Workflow introduction
+
+Every time I want to interact with LLMs/AI I just hit
+C-c i n to open the daily interaction file.
+
+Then I hit C-c i t to start a new topic thread if necessary.
+
+After that I just type at the end of the file in the 'Next Question'
+area and hit C-c RET to get a reply.
+
+I also have gptel-menu bound to C-c i g which lets me attach
+context if I'd like to, switch models, etc.
+
+** So what is this repo?
+
 This repo has a series of tools to facilitate my daily
 use of gptel in org:
 
@@ -15,7 +30,6 @@ use of gptel in org:
     returned by AIs to fit into the current headline.  Ensures
     that if your AI returns a top level header, it will be indented
     so it doesnt break structure
-
 
 ** How I use org structure
 
@@ -57,20 +71,15 @@ responses are structured in a very useful way.
 Here is my use-package definitions:
 
 #+begin_src elisp
-  (use-package gptel-org-heading-adjust
-    :after gptel
-    :config
-    (gptel-org-heading-adjust-mode-enable)
-    )
-
   (use-package gptel-org-utils
-    :after (org, gptel)
+    :after (org gptel)
 
     :custom
     (gptel-org-branching-context nil)
     (gptel-org-convert-response t)
 
     :config
+    (gptel-org-heading-adjust-mode-enable)
     (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "** Next Question\n@user\n")
     (setf (alist-get 'org-mode gptel-response-prefix-alist) "*** Next Reply\n@assistant\n\n")
 
@@ -97,8 +106,7 @@ I also recommend:
 And believe it or not, that's all the AI packages I use.  gptel and
 claude-code-ide.
 
-
-* A shockingly useful use case
+** A shockingly useful use case
 
 I use gptel + mcp + org-mcp + the atlassian MCP, via the 'mcp-remote'
 nodejs tool to have AI deal with JIRA for me.  Suddenly it doesn't

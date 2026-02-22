@@ -59,7 +59,7 @@ Uses the `gptel-heading-adjusted' text property to track state."
             ;; Add extra stars
             ;;(message (format "Adding extra stars! starting %s ending %s" star-start star-end))
             (goto-char star-end)
-            (insert (make-string gptel-org-heading-adjust--extra-stars ?*))
+            (insert-and-inherit (make-string gptel-org-heading-adjust--extra-stars ?*))
             ;; Mark as adjusted (put property on the first star)
             (put-text-property star-start (1+ star-start)
                                'gptel-heading-adjusted t)))))))
