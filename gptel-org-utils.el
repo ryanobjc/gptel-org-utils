@@ -23,7 +23,8 @@
   (message "Loading today's daily AI buffer")
   (find-file (expand-file-name (format-time-string "%Y-%m-%d.org")
                                gptel-org-utils-dailies-directory))
-  (gptel-mode))
+  (unless gptel-mode
+    (gptel-mode)))
 
 ;;;###autoload
 (defun gptel-org-utils-new-topic (topic)
@@ -41,7 +42,7 @@
     (gptel-org-set-topic newtopic))
   (forward-line 3)
   (org-insert-subheading "Next Question")
-  (insert "Next Question\n\n")
+  (insert "Next Question\n@user\n\n")
   )
 
 ;;;###autoload
